@@ -14,6 +14,20 @@
 #  limitations under the License.
 # ==================================================================================
 
+E Release - Dummy Version : For ML models evaluation and validation with dummy dataset, with possibility of switching to "influxDB" connection.
+
+MODIFICATIONS 
+
+database_dummy.py:
+	* Dataset is valid.csv split into train ("train" and "valid") and test ("liveUE")
+	* Includes "write_anomaly" function to write results into a .csv file.
+
+main_dummy.py: 
+	* By default set to Autoencoder (AE) training and prediction: ad_train_AE.py and ad_model_AE.py
+	* Possibility to switch to Isolation Forest (IF) model: ad_train.py and ad_model.py
+	* Obtains accuracy for the "liveUE" predictions.
+
+# ==================================================================================
 Usage of all the programs and files have been mentioned below for the reference.
 For AD xapp we require ueMeasReport(UE related dataset)
 
