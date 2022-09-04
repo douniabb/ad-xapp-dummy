@@ -15,6 +15,11 @@
 # ==================================================================================
 
 import joblib
+import keras
+import pandas as pd
+from tensorflow.keras.models import load_model
+import tensorflow as tf
+from ad_train_AE import AutoEncoder
 
 
 class modelling(object):
@@ -43,6 +48,11 @@ class modelling(object):
         sc = joblib.load('scale')
         self.data = sc.transform(self.data)
         
+        #for AE - minmaxscaler
+        aesc = joblib.load('AEscale')
+        self.data = aesc.transform(self.data)
+        
+        
 
     def predict(self, name):
         """ Load the saved model and return predicted result.
@@ -56,12 +66,24 @@ class modelling(object):
         pred:int
             predict label on a given sample
 
-        """
-
-        model = joblib.load(name)
-        pred = model.predict(self.data)
-        pred = [1 if p == -1 else 0 for p in pred]
+        """      
+        new_model = load_model('model')
+        #new_model.summary()
+        
+        
+        #self.data = tf.convert_to_tensor(self.data)
+        pred = new_model(self.data)  #predict
+        
+        # provides losses of individual instances
+        errors = keras.losses.msle(pred, self.data)
+        #print(errors)
+        # 1 = anomaly, 0 = normal
+        threshold = joblib.load('thr')
+        anomaly_mask = pd.Series(errors) > threshold
+        pred = anomaly_mask.map(lambda x: 1 if x == True else 0)
+        pred = pred.values.tolist()
         return pred
+
 
 
 class CAUSE(object):
@@ -111,6 +133,7 @@ def ad_predict(df):
     """
 
     db = modelling(df)
-    db_df = db.predict('model')  # Calls predict module and store the result into db_df
+    #db_df = db.predict('model')  # Calls predict module and store the result into db_df
+    db_df = db.predict('model')
     del db
     return db_df
