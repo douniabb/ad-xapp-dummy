@@ -37,12 +37,12 @@ def entry():
     """  If ML model is not present in the path, It will trigger training module to train the model.
       Calls predict function every 10 millisecond(for now as we are using simulated data).
     """
-    if not os.path.isfile('model'):
+    if not os.path.exists('model'):   
         train()
     predict()
-    schedule.every(0.0001).seconds.do(predict)
+    schedule.every(0.00001).seconds.do(predict)
     #while True:
-    while (pos) != 10:
+    while (pos) != len(ue_data):
         schedule.run_pending()
 
 
@@ -140,5 +140,6 @@ def start(thread=True):
     entry()
     accuracy()
     #xapp.run()
+    
     
 start(True)

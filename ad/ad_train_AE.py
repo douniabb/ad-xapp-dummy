@@ -36,7 +36,7 @@ class AutoEncoder(keras.Model):
     code_size: int - Default: 8
         Number of units in bottleneck - needs to be smaller than number of features
     """
-    def __init__(self, output_units, code_size=2):
+    def __init__(self, output_units, code_size=4):
         super(AutoEncoder,self).__init__()
         self.encoder = keras.Sequential([
             keras.layers.Dense(32, activation='relu'),
